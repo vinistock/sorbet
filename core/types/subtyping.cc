@@ -1303,6 +1303,13 @@ bool Types::isSubTypeUnderConstraint(const GlobalState &gs, TypeConstraint &cons
                Types::isSubTypeUnderConstraint(gs, constr, t1, o2->right, mode);
     }
     if (a1 != nullptr) { // 4
+        auto *t2v = cast_type<TypeVar>(t2);
+        if (t2v && !constr.isSolved() && constr.hasLowerBound(t2v->sym) &&
+            ((const TypeConstraint &)constr).findLowerBound(t2v->sym) == Types::bottom()) {
+            constr.rememberIsSubtype(gs, t1, t2);
+            return true;
+        }
+
         return Types::isSubTypeUnderConstraint(gs, constr, a1->left, t2, mode) ||
                Types::isSubTypeUnderConstraint(gs, constr, a1->right, t2, mode);
     }
