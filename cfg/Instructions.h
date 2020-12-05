@@ -63,7 +63,7 @@ public:
 
 protected:
     Instruction(Tag tag) : tag(tag) {}
-    virtual ~Instruction() = default;
+    ~Instruction() = default;
 
 private:
     friend InsnDeleter;
@@ -105,7 +105,7 @@ public:
     std::string toString(const core::GlobalState &gs, const CFG &cfg) const;
     std::string showRaw(const core::GlobalState &gs, const CFG &cfg, int tabs = 0) const;
 };
-CheckSize(Ident, 16, 8);
+CheckSize(Ident, 8, 8);
 
 INSN(Alias) : public Instruction {
 public:
@@ -117,7 +117,7 @@ public:
     std::string toString(const core::GlobalState &gs, const CFG &cfg) const;
     std::string showRaw(const core::GlobalState &gs, const CFG &cfg, int tabs = 0) const;
 };
-CheckSize(Alias, 24, 8);
+CheckSize(Alias, 16, 8);
 
 INSN(SolveConstraint) : public Instruction {
 public:
@@ -127,7 +127,7 @@ public:
     std::string toString(const core::GlobalState &gs, const CFG &cfg) const;
     std::string showRaw(const core::GlobalState &gs, const CFG &cfg, int tabs = 0) const;
 };
-CheckSize(SolveConstraint, 32, 8);
+CheckSize(SolveConstraint, 24, 8);
 
 INSN(Send) : public Instruction {
 public:
@@ -147,7 +147,7 @@ public:
     std::string toString(const core::GlobalState &gs, const CFG &cfg) const;
     std::string showRaw(const core::GlobalState &gs, const CFG &cfg, int tabs = 0) const;
 };
-CheckSize(Send, 152, 8);
+CheckSize(Send, 144, 8);
 
 INSN(Return) : public Instruction {
 public:
@@ -157,7 +157,7 @@ public:
     std::string toString(const core::GlobalState &gs, const CFG &cfg) const;
     std::string showRaw(const core::GlobalState &gs, const CFG &cfg, int tabs = 0) const;
 };
-CheckSize(Return, 40, 8);
+CheckSize(Return, 32, 8);
 
 INSN(BlockReturn) : public Instruction {
 public:
@@ -168,7 +168,7 @@ public:
     std::string toString(const core::GlobalState &gs, const CFG &cfg) const;
     std::string showRaw(const core::GlobalState &gs, const CFG &cfg, int tabs = 0) const;
 };
-CheckSize(BlockReturn, 56, 8);
+CheckSize(BlockReturn, 48, 8);
 
 INSN(LoadSelf) : public Instruction {
 public:
@@ -178,7 +178,7 @@ public:
     std::string toString(const core::GlobalState &gs, const CFG &cfg) const;
     std::string showRaw(const core::GlobalState &gs, const CFG &cfg, int tabs = 0) const;
 };
-CheckSize(LoadSelf, 32, 8);
+CheckSize(LoadSelf, 24, 8);
 
 INSN(Literal) : public Instruction {
 public:
@@ -188,7 +188,7 @@ public:
     std::string toString(const core::GlobalState &gs, const CFG &cfg) const;
     std::string showRaw(const core::GlobalState &gs, const CFG &cfg, int tabs = 0) const;
 };
-CheckSize(Literal, 32, 8);
+CheckSize(Literal, 24, 8);
 
 INSN(GetCurrentException) : public Instruction {
 public:
@@ -198,7 +198,7 @@ public:
     std::string toString(const core::GlobalState &gs, const CFG &cfg) const;
     std::string showRaw(const core::GlobalState &gs, const CFG &cfg, int tabs = 0) const;
 };
-CheckSize(GetCurrentException, 16, 8);
+CheckSize(GetCurrentException, 8, 8);
 
 INSN(LoadArg) : public Instruction {
 public:
@@ -213,7 +213,7 @@ public:
     std::string toString(const core::GlobalState &gs, const CFG &cfg) const;
     std::string showRaw(const core::GlobalState &gs, const CFG &cfg, int tabs = 0) const;
 };
-CheckSize(LoadArg, 16, 8);
+CheckSize(LoadArg, 8, 8);
 
 INSN(ArgPresent) : public Instruction {
 public:
@@ -228,7 +228,7 @@ public:
     std::string toString(const core::GlobalState &gs, const CFG &cfg) const;
     std::string showRaw(const core::GlobalState &gs, const CFG &cfg, int tabs = 0) const;
 };
-CheckSize(ArgPresent, 16, 8);
+CheckSize(ArgPresent, 8, 8);
 
 INSN(LoadYieldParams) : public Instruction {
 public:
@@ -240,7 +240,7 @@ public:
     std::string toString(const core::GlobalState &gs, const CFG &cfg) const;
     std::string showRaw(const core::GlobalState &gs, const CFG &cfg, int tabs = 0) const;
 };
-CheckSize(LoadYieldParams, 32, 8);
+CheckSize(LoadYieldParams, 24, 8);
 
 INSN(Cast) : public Instruction {
 public:
@@ -253,7 +253,7 @@ public:
     std::string toString(const core::GlobalState &gs, const CFG &cfg) const;
     std::string showRaw(const core::GlobalState &gs, const CFG &cfg, int tabs = 0) const;
 };
-CheckSize(Cast, 56, 8);
+CheckSize(Cast, 48, 8);
 
 INSN(TAbsurd) : public Instruction {
 public:
@@ -266,7 +266,7 @@ public:
     std::string toString(const core::GlobalState &gs, const CFG &cfg) const;
     std::string showRaw(const core::GlobalState &gs, const CFG &cfg, int tabs = 0) const;
 };
-CheckSize(TAbsurd, 40, 8);
+CheckSize(TAbsurd, 32, 8);
 
 struct InsnDeleter {
     void operator()(Instruction *insn) {
