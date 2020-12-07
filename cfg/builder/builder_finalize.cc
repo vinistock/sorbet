@@ -187,7 +187,7 @@ void CFGBuilder::dealias(core::Context ctx, CFG &cfg) {
         }
 
         for (Binding &bind : bb->exprs) {
-            if (auto *i = cast_instruction<Ident>(bind.value.get())) {
+            if (auto *i = cast_instruction<Ident>(bind.value)) {
                 i->what = maybeDealias(ctx, cfg, i->what, current);
             }
             if (mayHaveAlias.contains(bind.bind.variable.id())) {
@@ -205,22 +205,22 @@ void CFGBuilder::dealias(core::Context ctx, CFG &cfg) {
             if (!bind.value->isSynthetic) {
                 // we don't allow dealiasing values into synthetic instructions
                 // as otherwise it fools dead code analysis.
-                if (auto *v = cast_instruction<Ident>(bind.value.get())) {
+                if (auto *v = cast_instruction<Ident>(bind.value)) {
                     v->what = maybeDealias(ctx, cfg, v->what, current);
-                } else if (auto *v = cast_instruction<Send>(bind.value.get())) {
+                } else if (auto *v = cast_instruction<Send>(bind.value)) {
                     v->recv = maybeDealias(ctx, cfg, v->recv.variable, current);
                     for (auto &arg : v->args) {
                         arg = maybeDealias(ctx, cfg, arg.variable, current);
                     }
-                } else if (auto *v = cast_instruction<TAbsurd>(bind.value.get())) {
+                } else if (auto *v = cast_instruction<TAbsurd>(bind.value)) {
                     v->what = maybeDealias(ctx, cfg, v->what.variable, current);
-                } else if (auto *v = cast_instruction<Return>(bind.value.get())) {
+                } else if (auto *v = cast_instruction<Return>(bind.value)) {
                     v->what = maybeDealias(ctx, cfg, v->what.variable, current);
                 }
             }
 
             // record new aliases
-            if (auto *i = cast_instruction<Ident>(bind.value.get())) {
+            if (auto *i = cast_instruction<Ident>(bind.value)) {
                 current[bind.bind.variable] = i->what;
                 mayHaveAlias.add(i->what.id());
             }
@@ -267,11 +267,11 @@ void CFGBuilder::removeDeadAssigns(core::Context ctx, const CFG::ReadsAndWrites 
                                           // shorter to list the converse set -- those which *do* have
                                           // side effects -- but doing it this way is more robust to us
                                           // adding more instruction types in the future.
-                                          if (isa_instruction<Ident>(bind.value.get()) ||
-                                              isa_instruction<Literal>(bind.value.get()) ||
-                                              isa_instruction<LoadSelf>(bind.value.get()) ||
-                                              isa_instruction<LoadArg>(bind.value.get()) ||
-                                              isa_instruction<LoadYieldParams>(bind.value.get())) {
+                                          if (isa_instruction<Ident>(bind.value) ||
+                                              isa_instruction<Literal>(bind.value) ||
+                                              isa_instruction<LoadSelf>(bind.value) ||
+                                              isa_instruction<LoadArg>(bind.value) ||
+                                              isa_instruction<LoadYieldParams>(bind.value)) {
                                               return true;
                                           }
                                       }

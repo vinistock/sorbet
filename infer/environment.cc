@@ -91,12 +91,12 @@ KnowledgeFilter::KnowledgeFilter(core::Context ctx, unique_ptr<cfg::CFG> &cfg) {
         changed = false;
         for (auto &bb : cfg->forwardsTopoSort) {
             for (auto &bind : bb->exprs) {
-                if (auto *id = cfg::cast_instruction<cfg::Ident>(bind.value.get())) {
+                if (auto *id = cfg::cast_instruction<cfg::Ident>(bind.value)) {
                     if (isNeeded(bind.bind.variable) && !isNeeded(id->what)) {
                         used_vars[id->what.id()] = true;
                         changed = true;
                     }
-                } else if (auto *send = cfg::cast_instruction<cfg::Send>(bind.value.get())) {
+                } else if (auto *send = cfg::cast_instruction<cfg::Send>(bind.value)) {
                     if (send->fun == core::Names::bang()) {
                         if (send->args.empty()) {
                             if (isNeeded(bind.bind.variable) && !isNeeded(send->recv.variable)) {
@@ -928,9 +928,9 @@ core::TypePtr Environment::processBinding(core::Context ctx, const cfg::CFG &inW
                                           core::TypeConstraint &constr, core::TypePtr &methodReturnType) {
     try {
         core::TypeAndOrigins tp;
-        bool noLoopChecking = cfg::isa_instruction<cfg::Alias>(bind.value.get()) ||
-                              cfg::isa_instruction<cfg::LoadArg>(bind.value.get()) ||
-                              cfg::isa_instruction<cfg::LoadSelf>(bind.value.get());
+        bool noLoopChecking = cfg::isa_instruction<cfg::Alias>(bind.value) ||
+                              cfg::isa_instruction<cfg::LoadArg>(bind.value) ||
+                              cfg::isa_instruction<cfg::LoadSelf>(bind.value);
 
         bool checkFullyDefined = true;
         const core::lsp::Query &lspQuery = ctx.state.lspQuery;
@@ -1343,7 +1343,7 @@ core::TypePtr Environment::processBinding(core::Context ctx, const cfg::CFG &inW
                         break;
                     default: {
                         if (!asGoodAs || (tp.type.isUntyped() && !cur.type.isUntyped())) {
-                            if (auto ident = cfg::cast_instruction<cfg::Ident>(bind.value.get())) {
+                            if (auto ident = cfg::cast_instruction<cfg::Ident>(bind.value)) {
                                 // See cfg/builder/builder_walk.cc for an explanation of why this is here.
                                 if (ident->what.data(inWhat)._name == core::Names::blockBreakAssign()) {
                                     break;
@@ -1392,9 +1392,9 @@ core::TypePtr Environment::processBinding(core::Context ctx, const cfg::CFG &inW
         setTypeAndOrigin(bind.bind.variable, tp);
 
         clearKnowledge(ctx, bind.bind.variable, knowledgeFilter);
-        if (auto *send = cfg::cast_instruction<cfg::Send>(bind.value.get())) {
+        if (auto *send = cfg::cast_instruction<cfg::Send>(bind.value)) {
             updateKnowledge(ctx, bind.bind.variable, core::Loc(ctx.file, bind.loc), send, knowledgeFilter);
-        } else if (auto *i = cfg::cast_instruction<cfg::Ident>(bind.value.get())) {
+        } else if (auto *i = cfg::cast_instruction<cfg::Ident>(bind.value)) {
             propagateKnowledge(ctx, bind.bind.variable, i->what, knowledgeFilter);
         }
 
