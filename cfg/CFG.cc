@@ -105,8 +105,7 @@ CFG::ReadsAndWrites CFG::findAllReadsAndWrites(core::Context ctx) {
              * assignment. Treating every write as also reading from the
              * variable serves to represent this.
              */
-            if (bind.bind.variable.isAliasForGlobal(ctx, *this) &&
-                cast_instruction<Alias>(bind.value) == nullptr) {
+            if (bind.bind.variable.isAliasForGlobal(ctx, *this) && cast_instruction<Alias>(bind.value) == nullptr) {
                 blockReads.add(bind.bind.variable.id());
             }
 
@@ -303,7 +302,6 @@ string BasicBlock::showRaw(const core::GlobalState &gs, const CFG &cfg) const {
     return to_string(buf);
 }
 
-Binding::Binding(LocalRef bind, core::LocOffsets loc, InsnPtr value)
-    : bind(bind), loc(loc), value(std::move(value)) {}
+Binding::Binding(LocalRef bind, core::LocOffsets loc, InsnPtr value) : bind(bind), loc(loc), value(std::move(value)) {}
 
 } // namespace sorbet::cfg

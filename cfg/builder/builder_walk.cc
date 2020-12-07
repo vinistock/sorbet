@@ -430,7 +430,7 @@ BasicBlock *CFGBuilder::walk(CFGContext cctx, ast::TreePtr &what, BasicBlock *cu
                     }
                     auto link = make_shared<core::SendAndBlockLink>(s.fun, move(argFlags), newRubyBlockId);
                     auto send = make_insn<Send>(recv, s.fun, s.recv.loc(), s.numPosArgs, args, argLocs,
-                                                  !!s.flags.isPrivateOk, link);
+                                                !!s.flags.isPrivateOk, link);
                     LocalRef sendTemp = cctx.newTemporary(core::Names::blockPreCallTemp());
                     auto solveConstraint = make_insn<SolveConstraint>(link, sendTemp);
                     current->exprs.emplace_back(sendTemp, s.loc, move(send));
@@ -471,15 +471,14 @@ BasicBlock *CFGBuilder::walk(CFGContext cctx, ast::TreePtr &what, BasicBlock *cu
                         // 0-length so LSP ignores it in queries.
                         core::LocOffsets zeroLengthLoc = arg.loc.copyWithZeroLength();
                         bodyBlock->exprs.emplace_back(
-                            idxTmp, zeroLengthLoc,
-                            make_insn<Literal>(core::make_type<core::LiteralType>(int64_t(i))));
+                            idxTmp, zeroLengthLoc, make_insn<Literal>(core::make_type<core::LiteralType>(int64_t(i))));
                         InlinedVector<LocalRef, 2> idxVec{idxTmp};
                         InlinedVector<core::LocOffsets, 2> locs{zeroLengthLoc};
                         auto isPrivateOk = false;
                         bodyBlock->exprs.emplace_back(argLoc, arg.loc,
                                                       make_insn<Send>(argTemp, core::Names::squareBrackets(),
-                                                                        s.block.loc(), idxVec.size(), idxVec, locs,
-                                                                        isPrivateOk));
+                                                                      s.block.loc(), idxVec.size(), idxVec, locs,
+                                                                      isPrivateOk));
                     }
 
                     conditionalJump(headerBlock, LocalRef::blockCall(), bodyBlock, solveConstraintBlock, cctx.inWhat,
@@ -525,9 +524,9 @@ BasicBlock *CFGBuilder::walk(CFGContext cctx, ast::TreePtr &what, BasicBlock *cu
                      *
                      */
                 } else {
-                    current->exprs.emplace_back(cctx.target, s.loc,
-                                                make_insn<Send>(recv, s.fun, s.recv.loc(), s.numPosArgs, args,
-                                                                  argLocs, !!s.flags.isPrivateOk));
+                    current->exprs.emplace_back(
+                        cctx.target, s.loc,
+                        make_insn<Send>(recv, s.fun, s.recv.loc(), s.numPosArgs, args, argLocs, !!s.flags.isPrivateOk));
                 }
 
                 ret = current;
@@ -586,8 +585,8 @@ BasicBlock *CFGBuilder::walk(CFGContext cctx, ast::TreePtr &what, BasicBlock *cu
                 auto isPrivateOk = false;
 
                 synthesizeExpr(afterBreak, ignored, core::LocOffsets::none(),
-                               make_insn<Send>(magic, core::Names::blockBreak(), core::LocOffsets::none(),
-                                                 args.size(), args, locs, isPrivateOk));
+                               make_insn<Send>(magic, core::Names::blockBreak(), core::LocOffsets::none(), args.size(),
+                                               args, locs, isPrivateOk));
 
                 if (cctx.breakScope == nullptr) {
                     if (auto e = cctx.ctx.beginError(a.loc, core::errors::CFG::NoNextScope)) {
@@ -610,15 +609,14 @@ BasicBlock *CFGBuilder::walk(CFGContext cctx, ast::TreePtr &what, BasicBlock *cu
                     unconditionalJump(current, cctx.inWhat.deadBlock(), cctx.inWhat, a.loc);
                 } else {
                     auto magic = cctx.newTemporary(core::Names::magic());
-                    synthesizeExpr(current, magic, core::LocOffsets::none(),
-                                   make_insn<Alias>(core::Symbols::Magic()));
+                    synthesizeExpr(current, magic, core::LocOffsets::none(), make_insn<Alias>(core::Symbols::Magic()));
                     auto retryTemp = cctx.newTemporary(core::Names::retryTemp());
                     InlinedVector<cfg::LocalRef, 2> args{};
                     InlinedVector<core::LocOffsets, 2> argLocs{};
                     auto isPrivateOk = false;
                     synthesizeExpr(current, retryTemp, core::LocOffsets::none(),
-                                   make_insn<Send>(magic, core::Names::retry(), what.loc(), args.size(), args,
-                                                     argLocs, isPrivateOk));
+                                   make_insn<Send>(magic, core::Names::retry(), what.loc(), args.size(), args, argLocs,
+                                                   isPrivateOk));
                     unconditionalJump(current, cctx.rescueScope, cctx.inWhat, a.loc);
                 }
                 ret = cctx.inWhat.deadBlock();
@@ -685,8 +683,8 @@ BasicBlock *CFGBuilder::walk(CFGContext cctx, ast::TreePtr &what, BasicBlock *cu
                     auto args = {exceptionValue};
                     auto argLocs = {what.loc()};
                     synthesizeExpr(caseBody, res, rescueCase->loc,
-                                   make_insn<Send>(magic, core::Names::keepForCfg(), rescueCase->loc, args.size(),
-                                                     args, argLocs, isPrivateOk));
+                                   make_insn<Send>(magic, core::Names::keepForCfg(), rescueCase->loc, args.size(), args,
+                                                   argLocs, isPrivateOk));
 
                     if (exceptions.empty()) {
                         // rescue without a class catches StandardError
@@ -707,8 +705,8 @@ BasicBlock *CFGBuilder::walk(CFGContext cctx, ast::TreePtr &what, BasicBlock *cu
                         auto isPrivateOk = false;
                         rescueHandlersBlock->exprs.emplace_back(isaCheck, loc,
                                                                 make_insn<Send>(localVar, core::Names::isA_p(), loc,
-                                                                                  args.size(), args, argLocs,
-                                                                                  isPrivateOk));
+                                                                                args.size(), args, argLocs,
+                                                                                isPrivateOk));
 
                         auto otherHandlerBlock = cctx.inWhat.freshBlock(cctx.loops, handlersRubyBlockId);
                         conditionalJump(rescueHandlersBlock, isaCheck, caseBody, otherHandlerBlock, cctx.inWhat, loc);
@@ -726,8 +724,7 @@ BasicBlock *CFGBuilder::walk(CFGContext cctx, ast::TreePtr &what, BasicBlock *cu
                 // and if so, after the ensure runs, we should jump to dead
                 // since in Ruby the exception would propagate up the statck.
                 auto gotoDeadTemp = cctx.newTemporary(core::Names::gotoDeadTemp());
-                synthesizeExpr(rescueHandlersBlock, gotoDeadTemp, a.loc,
-                               make_insn<Literal>(core::Types::trueClass()));
+                synthesizeExpr(rescueHandlersBlock, gotoDeadTemp, a.loc, make_insn<Literal>(core::Types::trueClass()));
                 unconditionalJump(rescueHandlersBlock, ensureBody, cctx.inWhat, a.loc);
 
                 auto throwAway = cctx.newTemporary(core::Names::throwAwayTemp());
