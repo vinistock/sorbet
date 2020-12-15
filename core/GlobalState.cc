@@ -1889,6 +1889,10 @@ bool GlobalState::shouldReportErrorOn(Loc loc, ErrorClass what) const {
         // so it's no use spending time computing better error messages.
         return false;
     }
+    if (!ignoredForSuggestTypedErrorClasses.empty()) {
+        // We're currently running with `--suggest-typed`.
+        return false;
+    }
 
     StrictLevel level = StrictLevel::Strong;
     if (loc.file().exists()) {
