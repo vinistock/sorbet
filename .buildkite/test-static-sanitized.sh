@@ -30,13 +30,6 @@ err=0
 
 mkdir -p _out_
 
-set -x
-./bazel build //core:generate_names --config=buildfarm-sanitized-mac --sandbox_debug --verbose_failures -s
-
-./bazel-bin/core/generate_names foo.h foo.cc
-
-exit 1
-
 ./bazel test \
   --experimental_generate_json_trace_profile --profile=_out_/profile.json \
   @gems//... \
