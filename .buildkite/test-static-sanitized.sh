@@ -31,7 +31,7 @@ err=0
 mkdir -p _out_
 
 set -x
-./bazel build //core:generate_names --sandbox_debug --verbose_failures -s || true
+./bazel build //core:generate_names --config=buildfarm-sanitized-mac --sandbox_debug --verbose_failures -s
 
 ./bazel-bin/core/generate_names foo.h foo.cc
 
