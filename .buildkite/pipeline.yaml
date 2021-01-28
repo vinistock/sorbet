@@ -33,7 +33,7 @@ steps:
     # TODO(jez) We should only retry for specific error.
     # The one we were trying to fix was `'foo.h': file not found`
     retry:
-     automatic: true
+     automatic: false
 
   # - label: ":linux: test-static-sanitized.sh"
   #   command: .buildkite/test-static-sanitized.sh
