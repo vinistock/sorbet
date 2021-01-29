@@ -23,6 +23,8 @@ echo will run with $CONFIG_OPTS
 
 ./bazel build //main:sorbet --strip=always $CONFIG_OPTS
 
+./bazel-bin/main/sorbet --help
+
 mkdir gems/sorbet-static/libexec/
 cp bazel-bin/main/sorbet gems/sorbet-static/libexec/
 
