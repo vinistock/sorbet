@@ -125,7 +125,7 @@ string DefTree::show(const core::GlobalState &gs, int level) const {
 
 string DefTree::fullName(const core::GlobalState &gs) const {
     return fmt::format(
-        "{}", fmt::map_join(qname.nameParts, "::", [&](core::NameRef nr) -> string_view { return nr.show(gs); }));
+        "{}", fmt::map_join(qname.nameParts, "::", [&](core::NameRef nr) -> string { return nr.show(gs); }));
 }
 
 string join(string path, string file) {
