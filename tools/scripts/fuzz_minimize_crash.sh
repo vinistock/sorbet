@@ -72,7 +72,7 @@ handle_TERM() {
 trap handle_INT SIGINT
 trap handle_TERM SIGTERM
 
-export PATH="$PATH:$PWD/bazel-sorbet/external/llvm_toolchain/bin"
+export PATH="$PATH:$PWD/bazel-sorbet/external/clang_10_0_1/bin"
 if ! command -v llvm-symbolizer >/dev/null; then
   echo "fatal: command not found: llvm-symbolizer"
   exit 1
