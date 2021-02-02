@@ -11,14 +11,14 @@ bazel_toolchain_dependencies()
 load("@com_grail_bazel_toolchain//toolchain:rules.bzl", "llvm_toolchain")
 
 llvm_toolchain(
-    name = "clang_10_0_1",
+    name = "llvm_toolchain_11_0_0",
     absolute_paths = True,
     llvm_mirror_prefixes = [
         "https://sorbet-deps.s3-us-west-2.amazonaws.com/",
         "https://artifactory-content.stripe.build/artifactory/github-archives/llvm/llvm-project/releases/download/llvmorg-",
         "https://github.com/llvm/llvm-project/releases/download/llvmorg-",
     ],
-    llvm_version = "10.0.1",
+    llvm_version = "11.0.0",
 )
 
 load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
