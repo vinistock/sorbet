@@ -104,10 +104,10 @@ def register_sorbet_dependencies():
 
     http_archive(
         name = "statsd",
-        urls = _github_public_urls("romanbsd/statsd-c-client/archive/0caa5ef05d6a786bb4695394534a7182a3c94427.zip"),
-        sha256 = "0c67e994fb809ac9b0fd2216333b0dff5592401f81dc04fb7a0c2179d6b76dca",
+        urls = _github_public_urls("romanbsd/statsd-c-client/archive/08ecca678345f157e72a1db1446facb403cbeb65.zip"),
+        sha256 = "825395556fb553383173e47dbce98165981d100587993292ec9d174ec40a7ba1",
         build_file = "@com_stripe_ruby_typer//third_party:statsd.BUILD",
-        strip_prefix = "statsd-c-client-0caa5ef05d6a786bb4695394534a7182a3c94427",
+        strip_prefix = "statsd-c-client-08ecca678345f157e72a1db1446facb403cbeb65",
     )
 
     http_archive(
