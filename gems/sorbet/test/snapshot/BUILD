@@ -27,6 +27,8 @@ sh_binary(
         "@ruby_2_5//:ruby",
         "@ruby_2_6//:bundle",
         "@ruby_2_6//:ruby",
+        "@ruby_2_7//:bundle",
+        "@ruby_2_7//:ruby",
     ],
     # NOTE: ensure that this rule isn't caught in //...
     tags = ["manual"],
@@ -83,6 +85,29 @@ snapshot_tests(
     ),
 )
 
+snapshot_tests(
+    ruby = "ruby_2_7",
+    tests = glob(
+        [
+            "partial/*",
+            "total/*",
+        ],
+        exclude = [
+            # Requires native extensions.
+            # Can't be rewritten, because it's essentially an integration test
+            # that a certain private Rails API gives us back absolute vs
+            # relative paths.
+            "partial/rails-double-require",
+
+            # Requires nokogiri, which builds a native extension
+            "partial/rails6",
+        ],
+
+        # We only want to match directories with this glob
+        exclude_directories = 0,
+    ),
+)
+
 test_suite(
     name = "snapshot",
 
@@ -91,6 +116,7 @@ test_suite(
     tests = [
         ":snapshot-ruby_2_5",
         ":snapshot-ruby_2_6",
+        ":snapshot-ruby_2_7",
     ],
 )
 
@@ -102,5 +128,6 @@ test_suite(
     tests = [
         ":update-ruby_2_5",
         ":update-ruby_2_6",
+        ":update-ruby_2_7",
     ],
 )
