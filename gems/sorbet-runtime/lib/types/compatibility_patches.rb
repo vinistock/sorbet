@@ -36,7 +36,7 @@ if defined? ::RSpec::Mocks
 
         module MethodDoubleExtensions
           def initialize(object, method_name, proxy)
-            if ::Kernel.instance_method(:respond_to?).bind(object).call(method_name, true)
+            if ::Kernel.instance_method(:respond_to?).bind_call(object, method_name, true)
               method = ::RSpec::Support.method_handle_for(object, method_name)
               T::Private::Methods.maybe_run_sig_block_for_method(method)
             end

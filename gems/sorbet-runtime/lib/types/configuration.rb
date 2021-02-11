@@ -395,7 +395,7 @@ module T::Configuration
   MODULE_NAME = Module.instance_method(:name)
   private_constant :MODULE_NAME
 
-  @default_module_name_mangler = ->(type) {MODULE_NAME.bind(type).call}
+  @default_module_name_mangler = ->(type) {MODULE_NAME.bind_call(type)}
   @module_name_mangler = nil
 
   def self.module_name_mangler
