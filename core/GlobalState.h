@@ -251,6 +251,9 @@ public:
     // The error code is appended to this string.
     std::string errorUrlBase;
 
+    // If 'true', do not print error sections
+    bool noErrorSections = false;
+
     // If 'true', enforce use of Ruby 3.0-style keyword args.
     bool ruby3KeywordArgs = false;
 
